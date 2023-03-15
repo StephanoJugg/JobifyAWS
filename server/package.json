@@ -1,0 +1,50 @@
+{
+  "name": "jobifyaws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "npx nodemon --ignore client",
+    "client": "cd .. && npm run dev --prefix client",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StephanoJugg/JobifyAWS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StephanoJugg/JobifyAWS/issues"
+  },
+  "homepage": "https://github.com/StephanoJugg/JobifyAWS#readme",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.15.3",
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^7.6.0",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.21",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/dotenv": "^8.2.0",
+    "@types/http-status-codes": "^1.2.0",
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/mongoose": "^5.11.97",
+    "@types/morgan": "^1.9.4",
+    "@types/validator": "^13.7.14",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.2.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.1",
+    "morgan": "^1.10.0",
+    "validator": "^13.9.0"
+  }
+}
