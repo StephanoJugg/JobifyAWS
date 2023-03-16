@@ -14,6 +14,8 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from "./actions";
 
 import { ProviderType, UserType, LocalStrorageUser } from "./contextTypes";
@@ -31,10 +33,13 @@ const initialState: UserType = {
   token: token ? token : "",
   userLocation: userLocation ? userLocation : "",
   jobLocation: userLocation ? userLocation : "",
+  showSidebar: false,
   displayAlert: () => {},
   registerUser: (currentUser: any) => {},
   loginUser: (currentUser: any) => {},
   setupUser: (curentUser: any, endPoint: string, alertText: string) => {},
+  toggleSidebar: () => {},
+  logoutUser: () => {},
 };
 
 const AppContext = createContext<UserType>(initialState);
@@ -163,9 +168,26 @@ const AppProvider: React.FC<ProviderType> = ({ children }) => {
     clearAlert();
   };
 
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR });
+  };
+
+  const logoutUser = () => {
+    dispatch({ type: LOGOUT_USER });
+    removeUserToLocalStorage();
+  };
+
   return (
     <AppContext.Provider
-      value={{ ...state, displayAlert, registerUser, loginUser, setupUser }}
+      value={{
+        ...state,
+        displayAlert,
+        registerUser,
+        loginUser,
+        setupUser,
+        toggleSidebar,
+        logoutUser,
+      }}
     >
       {children}
     </AppContext.Provider>

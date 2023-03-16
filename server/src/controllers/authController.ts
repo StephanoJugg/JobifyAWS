@@ -52,6 +52,30 @@ const login = async (req: Request, res: Response) => {
 
     res.status(StatusCodes.OK).json({ user, token, location: user.location });
 };
-const updateUser = async (req: Request, res: Response) => {};
+const updateUser = async (req: Request, res: Response) => {
+    const {email, name, lastName, location} = req.body;
+
+    if(!email || !name || !lastName || !location) {
+        throw new BadRequestError('Please provide valid credentials');
+    }
+
+    const user = await User.findOne({_id: req.user?.userId});
+
+    if(!user) {
+        throw new UnauthenticatedError('Invalid credentials');
+    }
+
+    user.name = name;
+    user.email = email;
+    user.lastName = lastName;
+    user.location = location;
+
+    await user.save();
+
+    const token = user.createJWT();
+
+    res.status(StatusCodes.OK).json({ user, token, location: user.location });
+
+};
 
 export { register, login, updateUser };

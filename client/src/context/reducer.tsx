@@ -10,7 +10,11 @@ import {
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
+  TOGGLE_SIDEBAR,
+  LOGOUT_USER,
 } from "./actions";
+
+import { initialState } from "./appContext";
 
 interface Action {
   type: string;
@@ -26,6 +30,7 @@ interface State {
   token: string;
   userLocation: string;
   jobLocation: string;
+  showSidebar: boolean;
 }
 
 const reducer = (state: State, action: Action): State => {
@@ -137,6 +142,23 @@ const reducer = (state: State, action: Action): State => {
       alertType: "danger",
       alertText: action.payload.msg,
       isLoading: false,
+    };
+  }
+
+  if (action.type === TOGGLE_SIDEBAR) {
+    return {
+      ...state,
+      showSidebar: !state.showSidebar,
+    };
+  }
+
+  if (action.type === LOGOUT_USER) {
+    return {
+      ...initialState,
+      user: null,
+      token: "",
+      userLocation: "",
+      jobLocation: "",
     };
   }
 

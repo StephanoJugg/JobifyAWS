@@ -1,5 +1,5 @@
-import React from "react";
+import Wrapper from "../../assets/wrappers/StatsContainer";
 
 export default function Stats() {
-  return <div>Stats</div>;
+  return <Wrapper>Stats</Wrapper>;
 }
