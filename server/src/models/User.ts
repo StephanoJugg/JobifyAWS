@@ -8,7 +8,7 @@ interface IUser {
     email: string;
     password: string;
     lastName: string;
-    location: string;
+    userLocation: string;
 }
 
 interface IUserMethods {
@@ -48,14 +48,12 @@ const UserSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
         maxLenght: 20,
         default:"Smith"
     },
-    location: {
+    userLocation: {
         type: String,
         trim: true,
         maxLenght: 20,
         default:"New York"
     }
-
-
 });
 
 UserSchema.pre("save", async function(){
@@ -66,13 +64,11 @@ UserSchema.pre("save", async function(){
 });
 
 UserSchema.method("createJWT", function(){
-    console.log(this + "CREATE JWT METHOD")
     return jwt.sign({userId: this._id}, process.env.JWT_SECRET!, {expiresIn: "1h"});
 });
 
 
 UserSchema.method("comparePasswords", async function(enteredPassword: string){
-    
     const isMatch: boolean = await bcrypt.compare(enteredPassword, this.password);
     return isMatch;
 });

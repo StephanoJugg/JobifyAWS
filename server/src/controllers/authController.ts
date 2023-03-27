@@ -17,7 +17,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const user = await User.create({name, email, password});
-    const token = user.schema.methods.createJWT();
+    const token = user.createJWT();
     if(!user) {
         throw new Error('User not created');
     }
@@ -25,9 +25,9 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(StatusCodes.CREATED).json({ user: { 
         email: user.email, 
         lastName: user.lastName, 
-        location: user.location, 
+        location: user.userLocation, 
         name: user.name}, 
-        token, location: user.location });
+        token, location: user.userLocation });
     
 };
 const login = async (req: Request, res: Response) => {
@@ -47,15 +47,15 @@ const login = async (req: Request, res: Response) => {
         throw new UnauthenticatedError('Invalid credentials');
     }
 
-    const token = user.schema.methods.createJWT();
+    const token = user.createJWT();
     user.password = "";
 
-    res.status(StatusCodes.OK).json({ user, token, location: user.location });
+    res.status(StatusCodes.OK).json({ user, token, location: user.userLocation });
 };
 const updateUser = async (req: Request, res: Response) => {
-    const {email, name, lastName, location} = req.body;
+    const {email, name, lastName, userLocation} = req.body;
 
-    if(!email || !name || !lastName || !location) {
+    if(!email || !name || !lastName || !userLocation) {
         throw new BadRequestError('Please provide valid credentials');
     }
 
@@ -68,13 +68,13 @@ const updateUser = async (req: Request, res: Response) => {
     user.name = name;
     user.email = email;
     user.lastName = lastName;
-    user.location = location;
+    user.userLocation = userLocation;
 
     await user.save();
 
     const token = user.createJWT();
 
-    res.status(StatusCodes.OK).json({ user, token, location: user.location });
+    res.status(StatusCodes.OK).json({ user, token, userLocation: user.userLocation });
 
 };
 

@@ -1,5 +1,10 @@
 import styled from 'styled-components'
 
+interface IWrapper {
+  color: string
+  bcg: string
+}
+
 const Wrapper = styled.article`
   padding: 2rem;
   background: var(--white);
@@ -26,7 +31,7 @@ const Wrapper = styled.article`
   .icon {
     width: 70px;
     height: 60px;
-    background: ${(props: any) => props.bcg};
+    background: ${(props: IWrapper) => props.bcg};
     border-radius: var(--borderRadius);
     display: flex;
     align-items: center;

@@ -16,9 +16,15 @@ import notFound from './middleware/not-found';
 import errorMiddleware from './middleware/error-handler';
 import auth from './middleware/auth';
 
+//for deployment
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
 
 const app = express();
 dotenv.config();
+//const __dirname = dirname(fileURLToPath(import.meta.url));
 
 if(process.env.NODE_ENV !== 'production'){
     app.use(morgan('dev'));
@@ -26,6 +32,8 @@ if(process.env.NODE_ENV !== 'production'){
 
 app.use(cors());
 app.use(express.json());
+//for deployment
+//app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 app.get('/api/v1', (req, res) => {
     res.send('Hello World!')
@@ -33,6 +41,10 @@ app.get('/api/v1', (req, res) => {
 
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/jobs', auth,jobRouter)
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+// });
 
 app.use(notFound);
 app.use(errorMiddleware);

@@ -3,7 +3,7 @@ import { verify } from 'jsonwebtoken';
 import { UnauthenticatedError } from '../errors';
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
-   const authHeader = req.headers.authorization;
+   const authHeader = req.get('authorization');
    if(!authHeader || !authHeader.startsWith('Bearer')) {
        throw new UnauthenticatedError('No token provided');
     }
