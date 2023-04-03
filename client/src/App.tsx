@@ -9,6 +9,25 @@ import {
   Stats,
 } from "./pages/dashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Amplify } from "aws-amplify";
+
+Amplify.configure({
+  aws_project_region: "eu-central-1",
+  Auth: {
+    region: "eu-central-1",
+    userPoolId: "eu-central-1_n61wPsgjP",
+    userPoolWebClientId: "5oeqejjo8dnu2dvb6qgm2srad",
+  },
+  API: {
+    endpoints: [
+      {
+        name: "jobs",
+        endpoint:
+          "https://c1uxl6bkfc.execute-api.eu-central-1.amazonaws.com/prod/api/jobs",
+      },
+    ],
+  },
+});
 
 function App() {
   return (

@@ -4,6 +4,7 @@ import Wrapper from "../assets/wrappers/RegisterPage";
 import { Logo, FormRow, Alert } from "../components";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/appContext";
+import { useAuthContext } from "../wrappers/AuthContext";
 
 type User = {
   name: string;
@@ -21,22 +22,17 @@ const initialState: User = {
 
 export default function Register() {
   const [values, setValues] = useState(initialState);
-  const {
-    isLoading,
-    showAlert,
-    user,
-    displayAlert,
-    registerUser,
-    loginUser,
-    setupUser,
-  } = useAppContext();
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuthContext();
+  const { showAlert, user, displayAlert, registerUser, loginUser, setupUser } =
+    useAppContext();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { name, email, password, isMember } = values;
 
@@ -45,13 +41,24 @@ export default function Register() {
       return;
     }
 
-    const currentUser = { name, email, password };
+    const formValues = { name, email, password };
+    setIsLoading(true);
 
     if (isMember) {
-      console.log(currentUser + " is a member");
-      setupUser(currentUser, "login", "User logged in successfully");
+      await auth.login({
+        email: formValues.email,
+        password: formValues.password,
+        name: "",
+      });
+      setIsLoading(false);
+      navigate("/");
     } else {
-      setupUser(currentUser, "register", "User registered successfully");
+      await auth.register({
+        email: formValues.email,
+        password: formValues.password,
+        name: formValues.name,
+      });
+      setIsLoading(false);
     }
   };
 
