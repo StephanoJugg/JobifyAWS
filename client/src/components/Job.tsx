@@ -1,9 +1,9 @@
-import moment from "moment";
-import { FaLocationArrow, FaBriefcase, FaCalendarAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useAppContext } from "../context/appContext";
-import Wrapper from "../assets/wrappers/Job";
-import JobInfo from "./JobInfo";
+import moment from 'moment';
+import { FaLocationArrow, FaBriefcase, FaCalendarAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext/appContext';
+import Wrapper from '../assets/wrappers/Job';
+import JobInfo from './JobInfo';
 
 interface JobProps {
   _id: string;
@@ -24,7 +24,7 @@ export default function Job({
   status,
   createdAt,
 }: JobProps) {
-  let date = moment(createdAt).format("MMM Do, YYYY");
+  let date = moment(createdAt).format('MMM Do, YYYY');
   const { setEditJob, deleteJob } = useAppContext();
 
   return (

@@ -1,12 +1,18 @@
-import { useState } from "react";
-import Wrapper from "../assets/wrappers/Navbar";
-import { FaAlignLeft, FaUserCircle, FaCaretDown } from "react-icons/fa";
-import { useAppContext } from "../context/appContext";
-import Logo from "./Logo";
+import { useState } from 'react';
+import Wrapper from '../assets/wrappers/Navbar';
+import { FaAlignLeft, FaUserCircle, FaCaretDown } from 'react-icons/fa';
+import { useAppContext } from '../context/AppContext/appContext';
+import Logo from './Logo';
+import { useAuthContext } from '../context/AuthContext/AuthContext';
 
 export default function Navbar() {
   const [showLogout, setShowLogout] = useState(false);
-  const { user, toggleSidebar, logoutUser } = useAppContext();
+  const { toggleSidebar } = useAppContext();
+  const { logout, user } = useAuthContext();
+  let userName: string | undefined = '';
+  user?.getUserData((err, data) => {
+    userName = data?.UserAttributes[3].Value;
+  });
 
   return (
     <Wrapper>
@@ -25,11 +31,11 @@ export default function Navbar() {
             onClick={() => setShowLogout((prev) => !prev)}
           >
             <FaUserCircle />
-            {user && user.name}
+            {user && userName}
             <FaCaretDown />
           </button>
-          <div className={showLogout ? "dropdown show-dropdown" : "dropdown"}>
-            <button type="button" className="dropdown-btn" onClick={logoutUser}>
+          <div className={showLogout ? 'dropdown show-dropdown' : 'dropdown'}>
+            <button type="button" className="dropdown-btn" onClick={logout}>
               logout
             </button>
           </div>

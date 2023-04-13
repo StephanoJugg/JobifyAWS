@@ -1,6 +1,7 @@
-import { FormRow, FormRowSelect, Alert } from "../../components";
-import { useAppContext } from "../../context/appContext";
-import Wrapper from "../../assets/wrappers/DashboardFormPage";
+import { FormRow, FormRowSelect, Alert } from '../../components';
+import { useAppContext } from '../../context/AppContext/appContext';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+import { useAuthContext } from '../../context/AuthContext/AuthContext';
 
 export default function AddJob() {
   const {
@@ -13,7 +14,6 @@ export default function AddJob() {
     status,
     statusOptions,
     isEditing,
-    isLoading,
     displayAlert,
     handleChange,
     clearValues,
@@ -21,9 +21,11 @@ export default function AddJob() {
     editJob,
   } = useAppContext();
 
+  const { isLoading } = useAuthContext();
+
   const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!position || !company || !jobLocation) {
+    if (!position || !company) {
       displayAlert();
       return;
     }
@@ -49,7 +51,7 @@ export default function AddJob() {
   return (
     <Wrapper>
       <form className="form">
-        <h3>{isEditing ? "edit job" : "add job"} </h3>
+        <h3>{isEditing ? 'edit job' : 'add job'} </h3>
         {showAlert && <Alert />}
 
         <div className="form-center">

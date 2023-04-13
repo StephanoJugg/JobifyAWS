@@ -1,6 +1,6 @@
-import { useAppContext } from "../context/appContext";
-import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
-import Wrapper from "../assets/wrappers/PageBtnContainer";
+import { useAppContext } from '../context/AppContext/appContext';
+import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi';
+import Wrapper from '../assets/wrappers/PageBtnContainer';
 
 export default function PageBtnContainer() {
   const { numOfPages, page, changePage } = useAppContext();
@@ -35,7 +35,7 @@ export default function PageBtnContainer() {
             <button
               key={pageNumber}
               type="button"
-              className={page === pageNumber ? "pageBtn active" : "pageBtn"}
+              className={page === pageNumber ? 'pageBtn active' : 'pageBtn'}
               onClick={() => {
                 changePage(pageNumber);
               }}

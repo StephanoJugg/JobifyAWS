@@ -1,22 +1,32 @@
-import { useState } from "react";
-import { useAppContext } from "../../context/appContext";
-import { FormRow, Alert } from "../../components";
-import Wrapper from "../../assets/wrappers/DashboardFormPage";
+import { useEffect, useState } from 'react';
+import { useAppContext } from '../../context/AppContext/appContext';
+import { FormRow, Alert } from '../../components';
+import Wrapper from '../../assets/wrappers/DashboardFormPage';
+import { useAuthContext } from '../../context/AuthContext/AuthContext';
 
 export default function Profile() {
-  const {
-    user,
-    showAlert,
-    alertType,
-    alertText,
-    isLoading,
-    displayAlert,
-    updateUser,
-  } = useAppContext();
-  const [name, setName] = useState(user?.name ?? " ");
-  const [email, setEmail] = useState(user?.email ?? " ");
-  const [location, setLocation] = useState(user?.userLocation ?? " ");
-  const [lastName, setLastName] = useState(user?.lastName ?? " ");
+  const { showAlert, alertType, alertText, displayAlert } = useAppContext();
+  const { user, updateUser, getUserAttributes, isLoading } = useAuthContext();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [location, setLocation] = useState('');
+  const [lastName, setLastName] = useState('');
+  useEffect(() => {
+    user?.getUserAttributes((err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        setName(data![3].Value);
+        setEmail(data![5].Value);
+        setLastName(data![1].Value);
+        setLocation(data![4].Value);
+      }
+    });
+    const userAtt = async () => {
+      const data = await getUserAttributes(user!);
+    };
+    userAtt();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,14 +35,7 @@ export default function Profile() {
       return;
     }
 
-    updateUser({
-      _id: user?._id!,
-      name,
-      email,
-      lastName,
-      userLocation: location,
-      jobLocation: location,
-    });
+    updateUser({ name, email, userLocation: location, lastName });
   };
   return (
     <Wrapper>
@@ -66,7 +69,7 @@ export default function Profile() {
             handleChange={(e) => setLocation(e.target.value)}
           ></FormRow>
           <button className="btn btn-block" type="submit" disabled={isLoading}>
-            {isLoading ? "Please wait..." : "save changes"}
+            {isLoading ? 'Please wait...' : 'save changes'}
           </button>
         </div>
       </form>

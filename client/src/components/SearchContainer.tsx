@@ -1,10 +1,10 @@
-import { FormRow, FormRowSelect } from ".";
-import { useAppContext } from "../context/appContext";
-import Wrapper from "../assets/wrappers/SearchContainer";
+import { FormRow, FormRowSelect } from '.';
+import { useAppContext } from '../context/AppContext/appContext';
+import Wrapper from '../assets/wrappers/SearchContainer';
+import { useAuthContext } from '../context/AuthContext/AuthContext';
 
 export default function SearchContainer() {
   const {
-    isLoading,
     search,
     searchStatus,
     searchType,
@@ -15,6 +15,8 @@ export default function SearchContainer() {
     handleChange,
     clearFilters,
   } = useAppContext();
+
+  const { isLoading } = useAuthContext();
 
   const handleSearch = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -45,7 +47,7 @@ export default function SearchContainer() {
             name="searchStatus"
             value={searchStatus}
             handleChange={handleSearch}
-            selectValues={["all", ...statusOptions]}
+            selectValues={['all', ...statusOptions]}
           />
 
           <FormRowSelect
@@ -53,7 +55,7 @@ export default function SearchContainer() {
             name="searchType"
             value={searchType}
             handleChange={handleSearch}
-            selectValues={["all", ...jobTypeOptions]}
+            selectValues={['all', ...jobTypeOptions]}
           />
 
           <FormRowSelect

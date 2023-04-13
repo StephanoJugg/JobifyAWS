@@ -1,32 +1,32 @@
-import React from "react";
-import { useAppContext } from "../context/appContext";
-import StatsItem from "./StatsItem";
-import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from "react-icons/fa";
-import Wrapper from "../assets/wrappers/StatsContainer";
+import React from 'react';
+import { useAppContext } from '../context/AppContext/appContext';
+import StatsItem from './StatsItem';
+import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from 'react-icons/fa';
+import Wrapper from '../assets/wrappers/StatsContainer';
 
 export default function StatsContainer() {
   const { stats } = useAppContext();
   const defaultStats = [
     {
-      title: "pending applications",
+      title: 'pending applications',
       count: stats.pending || 0,
       icon: <FaSuitcaseRolling />,
-      color: "#e9b949",
-      bcg: "#fcefc7",
+      color: '#e9b949',
+      bcg: '#fcefc7',
     },
     {
-      title: "interviews scheduled",
+      title: 'interviews scheduled',
       count: stats.interview || 0,
       icon: <FaCalendarCheck />,
-      color: "#647acb",
-      bcg: "#e0e8f9",
+      color: '#647acb',
+      bcg: '#e0e8f9',
     },
     {
-      title: "jobs declined",
+      title: 'jobs declined',
       count: stats.declined || 0,
       icon: <FaSuitcaseRolling />,
-      color: "#d66a6a",
-      bcg: "#ffeeee",
+      color: '#d66a6a',
+      bcg: '#ffeeee',
     },
   ];
   return (

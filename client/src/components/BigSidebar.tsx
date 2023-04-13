@@ -1,7 +1,7 @@
-import Wrapper from "../assets/wrappers/BigSidebar";
-import { useAppContext } from "../context/appContext";
-import NavLinks from "./NavLinks";
-import Logo from "./Logo";
+import Wrapper from '../assets/wrappers/BigSidebar';
+import { useAppContext } from '../context/AppContext/appContext';
+import NavLinks from './NavLinks';
+import Logo from './Logo';
 
 export default function BigSidebar() {
   const { showSidebar } = useAppContext();
@@ -9,7 +9,7 @@ export default function BigSidebar() {
     <Wrapper>
       <div
         className={
-          showSidebar ? "sidebar-container" : "sidebar-container show-sidebar"
+          showSidebar ? 'sidebar-container' : 'sidebar-container show-sidebar'
         }
       >
         <div className="content">

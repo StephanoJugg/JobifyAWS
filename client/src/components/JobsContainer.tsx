@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { useAppContext } from "../context/appContext";
-import Wrapper from "../assets/wrappers/JobsContainer";
-import Loading from "./Loading";
-import Job from "./Job";
-import PageBtnContainer from "./PageBtnContainer";
+import { useEffect } from 'react';
+import { useAppContext } from '../context/AppContext/appContext';
+import Wrapper from '../assets/wrappers/JobsContainer';
+import Loading from './Loading';
+import Job from './Job';
+import PageBtnContainer from './PageBtnContainer';
 
 export default function JobsContainer() {
   const {
@@ -39,7 +39,7 @@ export default function JobsContainer() {
   return (
     <Wrapper>
       <h5>
-        {totalJobs} job{allJobs.length > 1 && "s"}
+        {totalJobs} job{allJobs.length > 1 && 's'}
       </h5>
       <div className="jobs">
         {allJobs.map((job) => {

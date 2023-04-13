@@ -1,7 +1,7 @@
-import { API } from "aws-amplify";
-import { useEffect, useState } from "react";
-import { StatsContainer, ChartsContainer, Loading } from "../../components";
-import { useAppContext } from "../../context/appContext";
+import { API } from 'aws-amplify';
+import { useEffect, useState } from 'react';
+import { StatsContainer, ChartsContainer, Loading } from '../../components';
+import { useAppContext } from '../../context/AppContext/appContext';
 
 export default function Stats() {
   // const { showStats, isLoading, monthlyApplications, stats } = useAppContext();
@@ -10,7 +10,7 @@ export default function Stats() {
   useEffect(() => {
     // console.log(monthlyApplications);
     // showStats();
-    API.get("jobs", "/stats", {});
+    API.get('jobs', '/stats', {});
   }, []);
 
   if (isLoading) return <Loading center />;

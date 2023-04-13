@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import Wrapper from "../assets/wrappers/RegisterPage";
-import { Logo, FormRow, Alert } from "../components";
-import { Link, useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/appContext";
-import { useAuthContext } from "../wrappers/AuthContext";
+import Wrapper from '../assets/wrappers/RegisterPage';
+import { Logo, FormRow, Alert } from '../components';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext/appContext';
+import { useAuthContext } from '../context/AuthContext/AuthContext';
 
 type User = {
   name: string;
@@ -14,18 +14,16 @@ type User = {
 };
 
 const initialState: User = {
-  name: "",
-  email: "",
-  password: "",
+  name: '',
+  email: '',
+  password: '',
   isMember: true,
 };
 
 export default function Register() {
   const [values, setValues] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useAuthContext();
-  const { showAlert, user, displayAlert, registerUser, loginUser, setupUser } =
-    useAppContext();
+  const { login, register, displayAlert, showAlert, user } = useAuthContext();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,15 +43,14 @@ export default function Register() {
     setIsLoading(true);
 
     if (isMember) {
-      await auth.login({
+      await login({
         email: formValues.email,
         password: formValues.password,
-        name: "",
+        name: '',
       });
       setIsLoading(false);
-      navigate("/");
     } else {
-      await auth.register({
+      await register({
         email: formValues.email,
         password: formValues.password,
         name: formValues.name,
@@ -72,7 +69,7 @@ export default function Register() {
   useEffect(() => {
     if (user) {
       setTimeout(() => {
-        navigate("/");
+        navigate('/');
       }, 3000);
     }
   }, [user, navigate]);
@@ -108,9 +105,9 @@ export default function Register() {
           submit
         </button>
         <p>
-          {values.isMember ? "Not a member yet ?" : "Already a member?"}
+          {values.isMember ? 'Not a member yet ?' : 'Already a member?'}
           <button type="button" onClick={toggleMember} className="member-btn">
-            {values.isMember ? "Register" : "Login"}
+            {values.isMember ? 'Register' : 'Login'}
           </button>
         </p>
       </form>

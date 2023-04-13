@@ -1,91 +1,101 @@
-import { LambdasCreator } from "./lambdas-creator";
-import * as cdk from "aws-cdk-lib";
-import { CfnOutput } from "aws-cdk-lib";
-import { LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { Construct } from "constructs";
-import path = require("path");
-import { AttributeType, Table } from "aws-cdk-lib/aws-dynamodb";
+import * as cdk from 'aws-cdk-lib';
+import { CfnOutput } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import path = require('path');
+import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
+const { Runtime } = require('aws-cdk-lib/aws-lambda');
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
-  UserPool,
-  UserPoolEmail,
-  UserPoolOperation,
-} from "aws-cdk-lib/aws-cognito";
+  AuthorizationType,
+  LambdaIntegration,
+  RestApi,
+} from 'aws-cdk-lib/aws-apigateway';
+import { AuthorizerWrapper } from './lambdas/Auth/AuthorizerWrapper';
 
 interface IJobifyStackProps extends cdk.StackProps {
   name: string;
 }
 
 export class JobifyStack extends cdk.Stack {
+  private restApi: RestApi;
+  private authorizer: AuthorizerWrapper;
+
   constructor(scope: Construct, id: string, props: IJobifyStackProps) {
     super(scope, id, props);
 
-    const api = new RestApi(this, "JobifyApi", {
-      restApiName: "JobifyApi",
+    this.restApi = new RestApi(this, 'JobifyApi', {
+      restApiName: 'JobifyAPI',
     });
 
-    const table = new Table(this, "JobifyTable", {
-      partitionKey: { name: "id", type: AttributeType.STRING },
-      tableName: id + "jobsTable",
+    this.authorizer = new AuthorizerWrapper(this, props.name, {
+      restApi: this.restApi,
+    });
+
+    const table = new Table(this, 'Jobify', {
+      partitionKey: { name: 'id', type: AttributeType.STRING },
+      tableName: id + '-jobsTable',
     });
 
     const expressServerLambda = new NodejsFunction(
       this,
-      "ExpressServerLambda",
+      'ExpressServerLambda',
       {
-        entry: path.join(__dirname, "lambdas", "express-server.ts"),
-        handler: "handler",
-        functionName: id + "ExpressServerLambda",
+        entry: path.join(__dirname, 'lambdas', 'express-server.ts'),
+        runtime: Runtime.NODEJS_16_X,
+        handler: 'handler',
+        functionName: id + 'ExpressServerLambda',
         timeout: cdk.Duration.seconds(30),
+        initialPolicy: [
+          new PolicyStatement({
+            actions: ['dynamodb:*', 'logs:*'],
+            resources: [table.tableArn],
+            effect: Effect.ALLOW,
+          }),
+        ],
+        environment: {
+          JOBS_TABLE: table.tableName,
+        },
       }
     );
 
-    const expressRoute = api.root.addProxy({
+    const expressRoute = this.restApi.root.addProxy({
       defaultIntegration: new LambdaIntegration(expressServerLambda),
+      defaultMethodOptions: {
+        authorizationType: AuthorizationType.COGNITO,
+        authorizer: {
+          authorizerId: this.authorizer.authorizer.authorizerId,
+        },
+      },
+    });
+
+    this.restApi.addGatewayResponse('default4XX', {
+      type: cdk.aws_apigateway.ResponseType.DEFAULT_4XX,
+      responseHeaders: {
+        'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+        'gatewayresponse.header.Access-Control-Allow-Methods': "'*'",
+        'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+      },
+    });
+
+    this.restApi.addGatewayResponse('default5XX', {
+      type: cdk.aws_apigateway.ResponseType.DEFAULT_5XX,
+      responseHeaders: {
+        'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+        'gatewayresponse.header.Access-Control-Allow-Methods': "'*'",
+        'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+      },
     });
 
     expressRoute.addCorsPreflight({
-      allowOrigins: ["*"],
-      allowMethods: ["*"],
-      allowHeaders: ["*"],
+      allowOrigins: ['*'],
+      allowMethods: ['*'],
+      allowHeaders: ['*'],
     });
 
-    // user verification with link confirmation
-    const userPool = new UserPool(this, id + "UserPool", {
-      userPoolName: id + "UserPool",
-      selfSignUpEnabled: true,
-      autoVerify: { email: true },
-      signInAliases: { email: true },
-      passwordPolicy: {
-        minLength: 6,
-        requireLowercase: false,
-        requireDigits: false,
-        requireSymbols: false,
-        requireUppercase: false,
-      },
-      userVerification: {
-        emailSubject: "Verify your email for Jobify",
-        emailBody:
-          "Thanks for signing up to Jobify! Your verification code is {####}",
-      },
-      email: UserPoolEmail.withCognito("test@fane.com"),
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-    });
-
-    const userPoolClient = userPool.addClient("JobifyClient", {
-      userPoolClientName: id + "JobifyClient",
-      generateSecret: false,
-      authFlows: {
-        userPassword: true,
-        userSrp: true,
-      },
-    });
-
-    new CfnOutput(this, "UserPoolId", {
-      value: userPool.userPoolId,
-    });
-    new CfnOutput(this, "UserPoolClientId", {
-      value: userPoolClient.userPoolClientId,
+    new CfnOutput(this, 'APIEndpoint', {
+      value: this.restApi.url!,
+      description: 'The endpoint of the API Gateway',
     });
   }
 }

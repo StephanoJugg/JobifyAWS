@@ -1,8 +1,12 @@
-import React from "react";
-import { useAppContext } from "../context/appContext";
+import React from 'react';
+import { useAuthContext } from '../context/AuthContext/AuthContext';
 
 export default function Alert() {
-  const { alertType, alertText } = useAppContext();
+  const { alert } = useAuthContext();
 
-  return <div className={`alert alert-${alertType}`}>{alertText}</div>;
+  console.log('ALERT' + alert);
+
+  return (
+    <div className={`alert alert-${alert.alertType}`}>{alert.alertMessage}</div>
+  );
 }
